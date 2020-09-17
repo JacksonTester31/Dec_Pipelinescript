@@ -1,0 +1,30 @@
+pipeline {
+    agent { label "master"}
+    stages {
+        stage('Build') {
+            steps {
+                script {
+                    //echo "working space is ${workspace}"
+                  def  workspace = "${workspace}"
+                  //echo "new"+workspace
+                    def Arr = ["1", "2", "3"] as String[]
+                  for (int i =0; i<Arr.length;i++){   
+                    def tests = [:]
+                    for (f in findFiles(glob: '**/bat/'+Arr[i]+'/*.bat')) {
+                        def temp_name = f
+                        tests["${temp_name}"]={
+                            node {
+                                stage(Arr[i]) {
+                                   bat "C:/Windows/System32/config/systemprofile/AppData/Local/Jenkins.jenkins/jobs/Pipeline_Project/"+"${temp_name}"
+                                }
+                            }
+                        }
+                        
+                    }
+                    parallel tests
+                }
+            }
+        }       
+    }
+}
+}
